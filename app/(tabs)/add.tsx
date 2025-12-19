@@ -49,6 +49,11 @@ export default function AddTransactionScreen() {
     const [accountId, setAccountId] = useState<number | null>(null);
     const [categoryId, setCategoryId] = useState<number | null>(null);
 
+
+    // grey out debit/credit if category selected
+    const isTypeLocked = categoryId !== null;
+
+
     const [showAccountModal, setShowAccountModal] = useState(false);
     const [showCategoryModal, setShowCategoryModal] = useState(false);
 
@@ -122,6 +127,32 @@ export default function AddTransactionScreen() {
 
                     {/* Type */}
                     <ThemedText style={styles.label}>Type</ThemedText>
+                    <View style={[styles.row, isTypeLocked && styles.disabledGroup]}>
+                        {(['debit', 'credit'] as const).map((t) => (
+                            <Pressable
+                                key={t}
+                                disabled={isTypeLocked}
+                                onPress={() => setType(t)}
+                                style={[
+                                    styles.toggle,
+                                    type === t && styles.toggleSelected,
+                                    isTypeLocked && styles.toggleDisabled,
+                                ]}
+                            >
+                                <ThemedText
+                                    style={
+                                        type === t
+                                            ? styles.selectedText
+                                            : styles.toggleText
+                                    }
+                                >
+                                    {t.toUpperCase()}
+                                </ThemedText>
+                            </Pressable>
+                        ))}
+                    </View>
+
+                    {/* <ThemedText style={styles.label}>Type</ThemedText>
                     <View style={styles.row}>
                         {(['debit', 'credit'] as const).map((t) => (
                             <Pressable
@@ -139,7 +170,9 @@ export default function AddTransactionScreen() {
                                 </ThemedText>
                             </Pressable>
                         ))}
-                    </View>
+                    </View> */}
+
+
 
                     {/* Date */}
                     <Pressable
@@ -251,10 +284,16 @@ export default function AddTransactionScreen() {
                                     <Pressable
                                         key={c.id}
                                         style={styles.modalItem}
+                                        // onPress={() => {
+                                        //     setCategoryId(c.id);
+                                        //     setShowCategoryModal(false);
+                                        // }}
                                         onPress={() => {
                                             setCategoryId(c.id);
+                                            setType(c.type); // 🔑 auto-derive transaction type
                                             setShowCategoryModal(false);
                                         }}
+
                                     >
                                         <ThemedText>{c.name}</ThemedText>
                                     </Pressable>
@@ -292,6 +331,13 @@ export default function AddTransactionScreen() {
                                                 styles.toggle,
                                                 newCategoryType === t && styles.toggleSelected,
                                             ]}
+                                            // message for 1st time users
+                                            {...isTypeLocked && (
+                                                <ThemedText style={{ fontSize: 12, opacity: 0.7 }}>
+                                                    Transaction type is determined by category
+                                                </ThemedText>
+                                            )}
+
                                         >
                                             <ThemedText
                                                 style={
@@ -410,4 +456,12 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: 'center',
     },
+    disabledGroup: {
+        opacity: 0.5,
+    },
+
+    toggleDisabled: {
+        borderColor: '#9CA3AF',
+    },
+
 });
