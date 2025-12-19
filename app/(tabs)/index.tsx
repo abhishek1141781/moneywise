@@ -1,32 +1,51 @@
 import { StyleSheet } from 'react-native';
+import { useState, useCallback } from 'react';
+import { useFocusEffect } from 'expo-router';
 
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 
-import { useEffect, useState } from 'react';
 import {
   getMonthlyExpenseSummary,
   getCategoryBreakdownForMonth,
 } from '@/db/repositories/summaryRepo';
 
+type MonthlySummary = {
+  month: string;
+  totalExpense: number;
+};
+
+type CategorySummary = {
+  categoryId: number;
+  categoryName: string;
+  total: number;
+};
+
 export default function SummaryScreen() {
-  const [monthly, setMonthly] = useState<any[]>([]);
-  const [categoryBreakdown, setCategoryBreakdown] = useState<any[]>([]);
+  // ✅ STATE (top level only)
+  const [monthly, setMonthly] = useState<MonthlySummary[]>([]);
+  const [categoryBreakdown, setCategoryBreakdown] =
+    useState<CategorySummary[]>([]);
 
-  useEffect(() => {
-    async function loadSummary() {
-      const yearMonth = new Date().toISOString().slice(0, 7);
+  // ✅ DATA LOADER
+  async function loadSummary() {
+    const yearMonth = new Date().toISOString().slice(0, 7);
 
-      setMonthly(await getMonthlyExpenseSummary());
-      setCategoryBreakdown(
-        await getCategoryBreakdownForMonth(yearMonth)
-      );
-    }
+    setMonthly(await getMonthlyExpenseSummary());
+    setCategoryBreakdown(
+      await getCategoryBreakdownForMonth(yearMonth)
+    );
+  }
 
-    loadSummary();
-  }, []);
+  // ✅ AUTO REFRESH ON TAB FOCUS
+  useFocusEffect(
+    useCallback(() => {
+      loadSummary();
+    }, [])
+  );
 
+  // ✅ RENDER
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
