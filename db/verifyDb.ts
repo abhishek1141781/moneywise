@@ -1,4 +1,4 @@
-// import { db } from './db';
+import { db } from './db';
 
 // export async function verifyDbInsert() {
 //     console.log('Inserting test account...');
@@ -19,12 +19,12 @@
 //     console.log('Test account inserted');
 // }
 
-// export async function verifyDbRead() {
-//     const rows = await db.getAllAsync<{
-//         id: number;
-//         bankName: string;
-//         openingBalance: number;
-//     }>('SELECT id, bankName, openingBalance FROM accounts');
+export async function verifyDbRead() {
+    const rows = await db.getAllAsync<{
+        id: number;
+        bankName: string;
+        openingBalance: number;
+    }>('SELECT id, bankName, openingBalance FROM accounts');
 
-//     console.log('Accounts in DB:', rows);
-// }
+    console.log('Accounts in DB:', rows);
+}

@@ -6,7 +6,8 @@ import { MIGRATIONS } from './schemaVersion';
 
 // // temp
 // import { verifyDbInsert, verifyDbRead } from './verifyDb';
-// import { runSummaryTests } from './testSummary';
+import { verifyDbRead } from './verifyDb';
+import { runSummaryTests } from './testSummary';
 
 
 
@@ -49,7 +50,7 @@ export async function initDatabase() {
   // // temp code
   // await verifyDbInsert();
 
-  // await verifyDbRead();
+  await verifyDbRead();
 
 
   // // STEP 1️⃣ Verify tables exist (READ-ONLY)         ----TEMP CODE
@@ -82,8 +83,8 @@ export async function initDatabase() {
   // );
   // console.log('Transactions:', txns);
 
-  // // 🧪 Testing Summary Queries (Safe & Clean)              --- temp code
-  // await runSummaryTests();
+  // 🧪 Testing Summary Queries (Safe & Clean)              --- temp code
+  await runSummaryTests();
 
 
 
